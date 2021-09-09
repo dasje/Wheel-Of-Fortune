@@ -38,8 +38,10 @@ class WOFHumanPlayer(WOFPlayer):
             return 'EXIT'
         elif move == 'pass':
             return 'PASS'
-        elif move in LETTERS and move not in guessed:
+        elif move.upper() in LETTERS and move.upper() not in guessed:
             return move
+        elif move.upper() in guessed:
+            return 'guessed'
 
 # computer_players = [WOFComputerPlayer('Computer {}'.format(i+1), difficulty) for i in range(num_computer)]
 
@@ -53,8 +55,6 @@ class WOFComputerPlayer(WOFPlayer):
         self.difficulty = 0
         self.prizes = []
         self.prizeMoney = 0
-
-
 
     def smartCoinFlip(self):
         num = random.randint(1, 10)
@@ -78,7 +78,7 @@ class WOFComputerPlayer(WOFPlayer):
             return 'pass'
         difficulty = self.smartCoinFlip()
         if difficulty == True:
-            x = SORTED_FREQUENCIES.sort(reverse = True)
+            x = sorted(self.SORTED_FREQUENCIES, reverse = True)
             for y in x:
                 if y not in let_list:
                     continue
@@ -201,6 +201,9 @@ def requestPlayerMove(player, category, guessed):
         move = move.upper() # convert whatever the player entered to UPPERCASE
         if move == 'EXIT' or move == 'PASS':
             return move
+        elif move == 'GUESSED':
+            print("You've already guessed this. Try again.")
+            continue
         elif len(move) == 1: # they guessed a character
             if move not in LETTERS: # the user entered an invalid letter (such as @, #, or $)
                 print('Guesses should be letters. Try again.')
